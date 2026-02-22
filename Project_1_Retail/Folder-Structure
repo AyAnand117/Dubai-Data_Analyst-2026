@@ -1,0 +1,21 @@
+data-analytics-portfolio/
+│
+├── Retail-Sales-Analysis/
+│   ├── retail_analysis.sql
+│   ├── dataset_description.md
+│   ├── project_notes.md
+│   ├── README.md
+│
+├── Customer-Churn-Analysis/
+│   ├── churn_queries.sql
+│   ├── dataset_description.md
+│   ├── project_notes.md
+│   ├── README.md
+│
+├── SQL-Practice/
+│   ├── window_functions.sql
+│   ├── joins_practice.sql
+│   ├── case_when_practice.sql
+│   ├── README.md
+│
+└── README.md   ← main portfolio README
