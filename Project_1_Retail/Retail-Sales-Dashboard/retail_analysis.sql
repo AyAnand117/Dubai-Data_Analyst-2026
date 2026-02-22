@@ -153,4 +153,43 @@ select product_category_name, sum(price) as revenue
 from olist_combined
 group by product_category_name 
 order by revenue desc limit 10;
+-- Month over month revenue change
+with rev_monthly as (
+select purchase_month, sum(price) as revenue
+from olist_combined
+group by purchase_month
+order by purchase_month
+)
+select purchase_month, revenue,
+lag(revenue) over (order by purchase_month) as prev_month_revenue,
+round((
+(revenue- lag(revenue) over(order by purchase_month) )/ nullif(lag(revenue) over (order by purchase_month),0))*100, 2
+) as revenue_chg_pct
+from rev_monthly
+order by purchase_month;
+-- Top 3 products per category
+/*
+with top3products as (
+select product_category_name, sum(price) as revenue,
+row_number() over (partition by product_category_name order by revenue desc) as prod_catg_rev
+from olist_combined)
+select * from top3products
+group by product_category_name
+having prod_catg_rev <= 3
+order by revenue desc
+;
 
+wrong X
+*/
+/* Correct */
+with top3products as (
+select
+product_id, product_category_name, sum(price) as revenue,
+row_number() over (partition by product_category_name order by sum(price) desc) as prod_catg_rev
+from olist_combined
+group by product_id, product_category_name
+)
+select *
+from top3products
+where prod_catg_rev <= 3
+order by product_category_name, revenue desc;
