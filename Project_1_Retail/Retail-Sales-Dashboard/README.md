@@ -18,3 +18,14 @@ This project analyzes retail sales performance using SQL and the Olist Brazilian
 - Data cleaning and transformation
 - Retail analytics
 - Time-series analysis
+
+## Retail Sales Analysis Dashboard
+
+Tools: SQL, Power BI, DAX, Power Query
+
+This dashboard analyzes e-commerce sales data to identify revenue trends, top-performing products, and regional performance.
+
+Key insights:
+- SP region generates the highest revenue.
+- Sales peak during Q4 indicating seasonal demand.
+- Top 5 products contribute a significant share of total revenue.
