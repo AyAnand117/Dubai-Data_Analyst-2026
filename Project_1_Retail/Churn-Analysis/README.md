@@ -186,6 +186,3 @@ This project highlights key data analytics skills including:
 
 This project is part of my **data analytics portfolio**, demonstrating my ability to analyze real-world datasets using Python and derive insights related to **customer behavior and churn risk**.
 
----
-
-If you'd like, I can also show you **how to upgrade this project in 1 hour so it looks like a full production-level churn analysis** (the version that impresses recruiters the most).
