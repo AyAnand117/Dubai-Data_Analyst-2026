@@ -1,184 +1,276 @@
 
 
-# 📊 Customer Churn & Sales Analysis – Food Delivery Dataset
+# Food Delivery Customer Churn Analysis (Random Forest)
 
-This project explores **customer behavior, order trends, and churn patterns** in a food delivery platform dataset using **Python, Pandas, and Plotly**.
+## Project Overview
 
-The goal of the project is to understand **what factors influence customer churn** and identify behavioral patterns that may help improve **customer retention and engagement**.
+This project analyzes customer behavior in a food delivery dataset and builds a **machine learning model to predict customer churn**.
 
-The analysis focuses on transforming raw transaction data into insights related to:
+The objective is to identify behavioral patterns that lead to customers becoming **inactive (churned)** and to evaluate the predictive power of various customer activity features.
 
-* Customer order behavior
-* Loyalty patterns
-* Pricing and order value trends
-* Delivery performance
-* Early indicators of customer churn
+The analysis includes:
 
----
-
-# 🚀 Project Objective
-
-Customer churn is a major challenge for food delivery platforms. Retaining existing customers is often significantly cheaper than acquiring new ones.
-
-The objective of this project is to:
-
-* Explore customer order and engagement patterns
-* Identify variables correlated with churn
-* Understand behavioral differences between retained and churned customers
-* Lay the groundwork for future churn prediction models
-
----
-
-# 📂 Dataset Overview
-
-The dataset contains **6,000 food delivery transactions** including customer information, order details, and delivery metrics.
-
-Key fields include:
-
-| Column          | Description                         |
-| --------------- | ----------------------------------- |
-| customer_id     | Unique identifier for each customer |
-| age             | Customer age                        |
-| gender          | Customer gender                     |
-| city            | Customer location                   |
-| signup_date     | Date the customer joined            |
-| order_id        | Unique order identifier             |
-| order_date      | Date the order was placed           |
-| restaurant_name | Restaurant fulfilling the order     |
-| dish_name       | Ordered item                        |
-| category        | Food category                       |
-| quantity        | Number of items ordered             |
-| price           | Total order value                   |
-| payment_method  | Method used for payment             |
-| order_frequency | Total orders placed by customer     |
-| loyalty_points  | Reward points accumulated           |
-| rating          | Customer rating                     |
-| delivery_status | Order delivery outcome              |
-| churned         | Whether the customer churned        |
-
----
-
-# 🧠 Analysis Performed
-
-## 1️⃣ Data Exploration
-
-Initial exploration was performed using **Pandas** to understand dataset structure.
-
-Steps included:
-
-* Loading and previewing data
-* Inspecting column types
-* Checking dataset shape and structure
-
----
-
-## 2️⃣ Data Quality Checks
-
-Data quality was evaluated using:
-
-* Missing value detection
-* Statistical summaries
-* Column type validation
-
-Example finding:
-
-* The **rating column contains missing values**, indicating incomplete customer feedback.
-
----
-
-## 3️⃣ Exploratory Data Analysis (EDA)
-
-EDA was conducted to analyze relationships between:
-
-* Order frequency and churn
-* Loyalty points and customer engagement
-* Order price distribution
-* Customer demographics
-* Delivery performance and ratings
-
-Visualizations were created to highlight trends and customer behavior patterns.
-
----
-
-# 📊 Churn Analysis Focus
-
-The project investigates potential drivers of customer churn, including:
-
-* Customers with **low order frequency**
-* Customers with **lower loyalty points**
-* Customers experiencing **delivery issues**
-* Customers providing **low ratings**
-
-Understanding these patterns can help food delivery platforms design **better retention strategies and loyalty programs**.
-
----
-
-# 🛠 Tools & Technologies
-
-**Programming Language**
-
-* Python
-
-**Libraries**
-
-* Pandas
-* NumPy
-* Plotly Express
-
-**Techniques**
-
-* Data cleaning
-* Missing value analysis
-* Exploratory Data Analysis (EDA)
-* Data visualization
-* Behavioral analysis
-
----
-
-# 📊 Key Business Questions
-
-This analysis attempts to answer questions such as:
-
-* What behavioral patterns indicate customer churn?
-* Do customers with higher order frequency churn less?
-* Does delivery performance influence customer ratings?
-* Which customer segments show the highest churn risk?
-
----
-
-# 🔮 Future Improvements
-
-Planned extensions for this project include:
-
-* Building a **machine learning churn prediction model**
-* Customer segmentation using clustering
+* Data exploration and validation
+* Data preprocessing and feature engineering
+* Feature selection
+* Random Forest modeling
+* Model evaluation using **Out-of-Bag (OOB) validation**
 * Feature importance analysis
-* Retention strategy recommendations
-* Time-series analysis of customer order behavior
+
+The full notebook can be viewed here:
+📄 **Sales-Analysis Notebook** 
 
 ---
 
-# 📁 Project Structure
+# Dataset
+
+The dataset contains **6000 customer records** from a food delivery platform.
+
+### Key Variables
+
+| Column          | Description                                |
+| --------------- | ------------------------------------------ |
+| customer_id     | Unique identifier for each customer        |
+| gender          | Customer gender                            |
+| age             | Age group                                  |
+| city            | Customer location                          |
+| signup_date     | Date of registration                       |
+| order_id        | Unique order identifier                    |
+| order_date      | Date of order                              |
+| restaurant_name | Restaurant from which the order was placed |
+| dish_name       | Dish ordered                               |
+| category        | Food category                              |
+| quantity        | Number of items ordered                    |
+| price           | Order price                                |
+| payment_method  | Payment type                               |
+| order_frequency | Number of orders placed                    |
+| last_order_date | Last order date                            |
+| loyalty_points  | Reward points accumulated                  |
+| delivery_status | Order delivery status                      |
+| rating          | Customer rating (with missing values)      |
+| rating_date     | Date of rating                             |
+| churned         | Target variable (Active / Inactive)        |
+
+---
+
+# Project Workflow
+
+## 1. Data Exploration
+
+Initial checks were performed to understand the structure of the dataset:
+
+* Preview of dataset
+* Dataset dimensions
+* Data types
+* Missing value analysis
+
+Key observation:
+
+* The **rating column contained ~30% missing values**, so it was removed from modeling.
+
+---
+
+# 2. Data Preprocessing
+
+### Removing Irrelevant Columns
+
+The following identifiers were removed because they do not provide predictive information:
+
+* `customer_id`
+* `order_id`
+
+---
+
+### Handling Dates
+
+Date columns were converted into useful behavioral features.
+
+Example feature:
 
 ```
-Food-Delivery-Churn-Analysis
+days_since_last_order
+```
+
+This measures customer inactivity and is an important churn indicator.
+
+---
+
+### Encoding Categorical Variables
+
+Categorical variables were converted into numerical form using **One-Hot Encoding**.
+
+Example:
+
+```
+gender → gender_Male, gender_Other
+payment_method → payment_method_Cash, payment_method_Wallet
+```
+
+---
+
+### Feature Scaling
+
+Numerical features were standardized using:
+
+```
+StandardScaler
+```
+
+Features scaled include:
+
+* price
+* quantity
+* loyalty_points
+* order_frequency
+* days_since_last_order
+
+---
+
+# 3. Train-Test Split
+
+The dataset was divided into:
+
+* **Training set (80%)**
+* **Test set (20%)**
+
+```
+train_test_split(test_size = 0.2)
+```
+
+---
+
+# 4. Feature Selection
+
+Feature selection was performed using:
+
+**Recursive Feature Elimination (RFE)**
+
+The algorithm recursively removes the least important features until a selected subset remains.
+
+```
+RFE(estimator = RandomForestClassifier)
+```
+
+---
+
+# 5. Model Training
+
+The model used in this project is:
+
+## Random Forest Classifier
+
+Random Forest is an ensemble model that builds multiple decision trees and aggregates their predictions.
+
+Model configuration:
+
+```
+RandomForestClassifier(
+    n_estimators = 200,
+    oob_score = True,
+    random_state = 42
+)
+```
+
+### Why Random Forest?
+
+* Handles nonlinear relationships
+* Works well with tabular data
+* Automatically estimates feature importance
+* Built-in **Out-of-Bag validation**
+
+---
+
+# 6. Model Evaluation
+
+### Out-of-Bag (OOB) Score
+
+Random Forest uses bootstrap sampling, leaving some observations unused for each tree. These unused samples are called **Out-of-Bag samples**.
+
+They act as an internal validation set.
+
+Example:
+
+```
+OOB Score ≈ 0.50
+```
+
+This indicates that the dataset contains **weak predictive signals for churn**.
+
+---
+
+# 7. Feature Importance
+
+Random Forest identifies the most influential variables for churn prediction.
+
+Top features:
+
+| Feature               | Importance |
+| --------------------- | ---------- |
+| price                 | 0.139      |
+| days_since_last_order | 0.135      |
+| loyalty_points        | 0.134      |
+| order_frequency       | 0.117      |
+| quantity              | 0.057      |
+
+These features represent **customer engagement and spending behavior**, which are typically strong indicators of churn.
+
+---
+
+# Key Insights
+
+1. **Customer activity features dominate churn prediction**
+
+   * order frequency
+   * recency of orders
+   * loyalty engagement
+
+2. **Demographic features have weaker influence**
+
+3. Behavioral metrics provide the most predictive power.
+
+---
+
+# Technologies Used
+
+* Python
+* Pandas
+* NumPy
+* Scikit-learn
+* Seaborn
+* Matplotlib
+* Plotly
+
+---
+
+# Project Structure
+
+```
+project/
 │
-├── churn_analysis.ipynb
-├── food_delivery_dataset.csv
+├── Sales-Analysis.ipynb      # Jupyter Notebook export
+├── foodpanda_dataset.csv    # Dataset
 ├── README.md
 ```
 
 ---
 
-# 🎯 Skills Demonstrated
+# Future Improvements
 
-This project highlights key data analytics skills including:
+Possible improvements to this model:
 
-* Data cleaning and preprocessing
-* Exploratory Data Analysis
-* Customer behavior analysis
-* Data visualization with Python
-* Business-oriented insight generation
+* Hyperparameter tuning (GridSearchCV)
+* Testing boosting algorithms (XGBoost / LightGBM)
+* Feature engineering using RFM metrics
+* Handling high-cardinality categorical variables
+* Using ROC-AUC for more robust evaluation
+
+---
+
+# Author : Ayush Anand
+
+Data Analysis / Data Science / Machine Learning Project
+
+Customer churn modeling using behavioral data from a food delivery platform.
 
 ---
 
